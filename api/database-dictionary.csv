@@ -1,0 +1,49 @@
+Tabela,Coluna,Tipo_Dado,PK,FK,Obrigatorio,Valor_Padrao,Restricoes_Regras,Descricao_Finalidade
+profiles,user_id,uuid,Sim,"auth.users(id)",Sim,,"ON DELETE CASCADE",Identificador único do usuário com privilégio de administrador
+profiles,role,text,Não,,Sim,'admin',"CHECK (role IN ('admin'))",Função ou papel do usuário no sistema
+profiles,created_at,timestamptz,Não,,Sim,now(),,Data e hora de criação do perfil de administrador
+posts,id,uuid,Sim,,Sim,gen_random_uuid(),,Identificador único do relato
+posts,user_id,uuid,Não,"auth.users(id)",Sim,,"ON DELETE CASCADE",Identificador do autor (visitante anônimo ou usuário autenticado)
+posts,category,text,Não,,Sim,,"CHECK (char_length(category) <= 80)",Categoria do relato (ex: 'Quero desabafar', 'Quero compartilhar uma experiência')
+posts,title,text,Não,,Sim,,"CHECK (char_length(title) BETWEEN 1 AND 90)",Título resumido do relato
+posts,body,text,Não,,Sim,,"CHECK (char_length(body) BETWEEN 10 AND 1500)",Texto completo do relato compartilhado
+posts,status,text,Não,,Sim,'pending',"CHECK (status IN ('pending', 'approved', 'rejected'))",Estado de moderação do relato
+posts,admin_reply,text,Não,,Não,null,,Resposta oficial de acolhimento escrita pela equipe Atypical World
+posts,created_at,timestamptz,Não,,Sim,now(),,Data e hora em que o relato foi submetido
+posts,published_at,timestamptz,Não,,Não,null,,Data e hora em que o relato foi aprovado e publicado
+comments,id,uuid,Sim,,Sim,gen_random_uuid(),,Identificador único do comentário
+comments,post_id,uuid,Não,"posts(id)",Sim,,"ON DELETE CASCADE",Identificador do relato pai ao qual o comentário pertence
+comments,user_id,uuid,Não,"auth.users(id)",Sim,,"ON DELETE CASCADE",Identificador do autor do comentário
+comments,body,text,Não,,Sim,,"CHECK (char_length(body) BETWEEN 1 AND 300)",Conteúdo do comentário de apoio
+comments,status,text,Não,,Sim,'pending',"CHECK (status IN ('pending', 'approved', 'rejected'))",Estado de moderação do comentário
+comments,created_at,timestamptz,Não,,Sim,now(),,Data e hora de envio do comentário
+likes,post_id,uuid,Sim,"posts(id)",Sim,,"ON DELETE CASCADE (Chave Composta)",Identificador do relato curtido
+likes,user_id,uuid,Sim,"auth.users(id)",Sim,,"ON DELETE CASCADE (Chave Composta)",Identificador do usuário que curtiu o relato
+likes,created_at,timestamptz,Não,,Sim,now(),,Data e hora em que a curtida foi registrada
+directory_services,id,uuid,Sim,,Sim,gen_random_uuid(),,Identificador único do serviço/profissional
+directory_services,name,text,Não,,Sim,,"CHECK (char_length(name) <= 150)",Nome da instituição ou profissional
+directory_services,category,text,Não,,Sim,,"CHECK (category IN ('sus', 'fono', 'psico', 'neuro', 'pediatria', 'multidisciplinar'))",Categoria de filtro do serviço
+directory_services,type_label,text,Não,,Sim,,"CHECK (char_length(type_label) <= 120)",Rótulo exibido no card (ex: 'FONOAUDIOLOGIA · PARTICULAR')
+directory_services,description,text,Não,,Sim,,Texto descritivo das especialidades e atendimentos
+directory_services,address,text,Não,,Sim,,Endereço físico em Rio Claro-SP
+directory_services,phone,text,Não,,Sim,,"Formato padrão: (19) xxxx-xxxx",Telefone de contato principal
+directory_services,whatsapp_url,text,Não,,Não,null,"URL no formato https://wa.me/...",Link direto para contato via WhatsApp
+directory_services,is_public,boolean,Não,,Sim,false,,Indica se é atendimento público (SUS/Prefeitura) ou privado
+directory_services,order_index,integer,Não,,Sim,0,,Ordem de exibição na listagem
+directory_services,created_at,timestamptz,Não,,Sim,now(),,Data de cadastro do serviço no diretório
+faq_items,id,uuid,Sim,,Sim,gen_random_uuid(),,Identificador único da pergunta
+faq_items,section,text,Não,,Sim,'faq',"CHECK (section IN ('tea', 'faq', 'direitos'))",Seção do site onde o item é exibido
+faq_items,question,text,Não,,Sim,,"CHECK (char_length(question) <= 200)",Pergunta ou dúvida frequente
+faq_items,answer,text,Não,,Sim,,Resposta clara e orientadora
+faq_items,order_index,integer,Não,,Sim,0,,Ordem de exibição no acordeão
+faq_items,created_at,timestamptz,Não,,Sim,now(),,Data de cadastro da pergunta
+search_topics,id,uuid,Sim,,Sim,gen_random_uuid(),,Identificador único do tópico de busca
+search_topics,title,text,Não,,Sim,,"CHECK (char_length(title) <= 100)",Título exibido no resultado da busca
+search_topics,anchor,text,Não,,Sim,,"Ex: '#tea', '#direitos'",Âncora de destino na página
+search_topics,keywords,text,Não,,Sim,,Lista de termos e sinônimos para indexação
+search_topics,order_index,integer,Não,,Sim,0,,Ordem de relevância ou exibição
+search_topics,created_at,timestamptz,Não,,Sim,now(),,Data de inclusão do tópico
+site_visits,id,uuid,Sim,,Sim,gen_random_uuid(),,Identificador único do registro de acesso
+site_visits,section,text,Não,,Sim,'inicio',,Seção da página acessada (ex: 'inicio', 'tea', 'direitos', 'escuta')
+site_visits,event_type,text,Não,,Sim,'page_view',"CHECK (event_type IN ('page_view', 'share_click', 'directory_contact_click', 'new_story_click'))",Tipo do evento/clique medido
+site_visits,created_at,timestamptz,Não,,Sim,now(),,Data e hora do acesso/clique registrado
